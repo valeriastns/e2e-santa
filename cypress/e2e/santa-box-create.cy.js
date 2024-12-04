@@ -121,6 +121,24 @@ describe("user can create a box and run it", () => {
     cy.clearCookies();
   });
 
+  it("draw lots", ()=>{
+    cy.visit("/login");
+    cy.login(users.userAuthor.email, users.userAuthor.password);
+    cy.get('.header-item > .header-item__text > .txt--med')
+    .first()
+    .should('have.text', 'Коробки')
+    .click({force: true});
+    cy.get('.MuiGrid-root > a.base--clickable > div.user-card').first().click();
+    cy.get('a > .txt-secondary--med')
+    .click();
+    cy.get(generalElements.submitButton).click();
+    cy.get('.santa-modal_content_buttons > .btn-main').click();
+    cy.get('a[href="/box/gzNBdS/santas"]')
+    .click();
+    cy.clearCookies();
+  });
+
+
   after("delete box", () => {
     cy.visit("/login");
     cy.login(users.userAuthor.email, users.userAuthor.password);
