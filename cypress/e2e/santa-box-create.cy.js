@@ -37,8 +37,7 @@ describe("user can create a box and run it", () => {
   };
 
   it("user logins and create a box", () => {
-    cy.visit("/login");
-    cy.login(users.userAuthor.email, users.userAuthor.password);
+    loginUser(users.userAuthor.email, users.userAuthor.password);
     cy.contains("Создать коробку").click();
     cy.get(boxPage.boxNameField).type(newBoxName);
     cy.get(boxPage.boxID)
@@ -76,10 +75,22 @@ describe("user can create a box and run it", () => {
       });
     cy.clearCookies();
   });
+
+  const participants = [users.user1, users.user2, users.user3];
+  participants.forEach((user, index) => {
+    it(`approve as participant ${index + 1}`, () => {
+      cy.visit(inviteLink);
+      cy.get(generalElements.submitButton).click();
+      cy.contains("войдите").click();
+      loginUser(user.email, user.password);
+      fillParticipantCard(wishes);
+      cy.clearCookies();
+    });
+  });
   
 
 
-  it("approve as user1", () => {
+  /*it("approve as user1", () => {
     cy.visit(inviteLink);
     cy.get(generalElements.submitButton).click();
     cy.contains("войдите").click();
@@ -135,6 +146,7 @@ describe("user can create a box and run it", () => {
       });
     cy.clearCookies();
   });
+  */
 
   it("draw lots", ()=>{
     cy.visit("/login");
