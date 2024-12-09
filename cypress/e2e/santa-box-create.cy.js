@@ -9,17 +9,6 @@ const inviteeDashboardPage = require("../fixtures/pages/inviteeDashboardPage.jso
 import { faker } from "@faker-js/faker";
 
 describe("user can create a box and run it", () => {
-  //пользователь 1 логинится
-  //пользователь 1 создает коробку
-  //пользователь 1 получает приглашение
-  //пользователь 2 переходит по приглашению
-  //пользователь 2 заполняет анкету
-  //пользователь 3 переходит по приглашению
-  //пользователь 3 заполняет анкету
-  //пользователь 4 переходит по приглашению
-  //пользователь 4 заполняет анкету
-  //пользователь 1 логинится
-  //пользователь 1 запускает жеребьевку
   let newBoxName = faker.word.noun({ length: { min: 5, max: 10 } });
   let wishes = faker.word.noun() + faker.word.adverb() + faker.word.adjective();
   let maxAmount = 50;
@@ -27,6 +16,25 @@ describe("user can create a box and run it", () => {
   let currency = "Евро";
   let inviteLink;
   let boxID;
+
+  const loginUser = (email, password) => {
+    cy.visit("/login");
+    cy.login(email, password);
+  };
+
+  const fillParticipantCard = (wishes) => {
+    cy.contains("Создать карточку участника").should("exist");
+    cy.get(generalElements.submitButton).click();
+    cy.get(generalElements.arrowRight).click();
+    cy.get(generalElements.arrowRight).click();
+    cy.get(inviteeBoxPage.wishesInput).type(wishes);
+    cy.get(generalElements.arrowRight).click();
+    cy.get(inviteeDashboardPage.noticeForInvitee)
+      .invoke("text")
+      .then((text) => {
+        expect(text).to.contain("Это — анонимный чат с вашим Тайным Сантой");
+      });
+  };
 
   it("user logins and create a box", () => {
     cy.visit("/login");
