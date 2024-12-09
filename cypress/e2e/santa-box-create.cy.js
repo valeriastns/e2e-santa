@@ -34,6 +34,7 @@ describe("user can create a box and run it", () => {
       .then((text) => {
         expect(text).to.contain("Это — анонимный чат с вашим Тайным Сантой");
       });
+      cy.clearCookies();
   };
 
   it("user creates a box", () => {
@@ -82,7 +83,7 @@ describe("user can create a box and run it", () => {
       cy.visit(inviteLink);
       cy.get(generalElements.submitButton).click();
       cy.contains("войдите").click();
-      loginUser(user.email, user.password);
+      cy.login(user.email, user.password);
       fillParticipantCard(wishes);
       cy.clearCookies();
     });
@@ -95,7 +96,7 @@ describe("user can create a box and run it", () => {
     .first()
     .should('have.text', 'Коробки')
     .click({force: true});
-    cy.get('.MuiGrid-root > a.base--clickable > div.user-card').first().click();
+    cy.get('.MuiGrid-root > a.base--clickable > div.user-card').last().click();
     cy.get('a > .txt-secondary--med')
     .click();
     cy.get(generalElements.submitButton).click();
@@ -106,8 +107,13 @@ describe("user can create a box and run it", () => {
   after("delete box", () => {
     cy.visit("/login");
     cy.login(users.userAuthor.email, users.userAuthor.password);
-    cy.request('DELETE',`https://santa-secret.ru/api/box/${boxID}` ).then((response)=>{
-      expect(response.status).to.eq(200)
-    });
+    cy.log(`Box ID: ${boxID}`);
+    cy.request({
+      method: 'DELETE',
+      url: `https://santa-secret.ru/api/box/${boxID}/delete`,
+      failOnStatusCode: false
+   }).then((response) => {
+      expect([200, 204]).to.include(response.status);
+   });
   })
 }); 
