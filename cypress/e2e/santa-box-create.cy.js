@@ -26,12 +26,19 @@ describe("user can create a box and run it", () => {
   let minAmount = 10;
   let currency = "Евро";
   let inviteLink;
+  let boxID;
 
   it("user logins and create a box", () => {
     cy.visit("/login");
     cy.login(users.userAuthor.email, users.userAuthor.password);
     cy.contains("Создать коробку").click();
     cy.get(boxPage.boxNameField).type(newBoxName);
+    cy.get(boxPage.boxID)
+    .invoke('val')
+    .then((id) => {
+      boxID = id;
+      expect(boxID).to.not.be.undefined
+    });
     cy.get(generalElements.arrowRight).click();
     cy.get(boxPage.sixthIcon).click();
     cy.get(generalElements.arrowRight).click();
@@ -138,20 +145,11 @@ describe("user can create a box and run it", () => {
     cy.clearCookies();
   });
 
-
   after("delete box", () => {
     cy.visit("/login");
     cy.login(users.userAuthor.email, users.userAuthor.password);
-    cy.get('.header-item > .header-item__text > .txt--med')
-    .first()
-    .should('have.text', 'Коробки')
-    .click({force: true});
-    cy.get('.MuiGrid-root > a.base--clickable > div.user-card').first().click();
-    cy.get(".layout-1__header-wrapper-fixed > .layout-1__header-secondary > .header-secondary > .header-secondary__right-item > .toggle-menu-wrapper > .toggle-menu-button > .toggle-menu-button--inner").click();
-    cy.contains("Архивация и удаление").click({ force: true });
-    cy.get(":nth-child(2) > .form-page-group__main > .frm-wrapper > .frm").type(
-      "Удалить коробку"
-    );
-    cy.get(".btn-service").click();
+    cy.request('DELETE',`https://santa-secret.ru/api/box/${boxID}` ).then((response)=>{
+      expect(response.status).to.eq(200)
+    });
   })
 }); 
