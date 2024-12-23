@@ -3,18 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "cypress.config.js",
+  "type": "module",
   "scripts": {
     "cy:run": "cypress run"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "^21.0.3",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.4",
     "@faker-js/faker": "^9.2.0",
     "cypress": "^13.17.0",
+    "cypress-cucumber-preprocessor": "^4.3.1",
     "esbuild": "^0.24.2"
-  },
-  "dependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^21.0.3"
   }
 }

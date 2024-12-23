@@ -1,19 +1,20 @@
-const { defineConfig } = require("cypress");
-const createBundler = require('@bahmutov/cypress-esbuild-preprocessor');
-const addCucumberPreprocessorPlugin = require('@badeball/cypress-cucumber-preprocessor').addCucumberPreprocessorPlugin;
-const createEsbuildPlugin = require('@badeball/cypress-cucumber-preprocessor/esbuild').createEsbuildPlugin;
+import { defineConfig } from "cypress";
+import createBundler from "@bahmutov/cypress-esbuild-preprocessor";
+import { addCucumberPreprocessorPlugin } from "@badeball/cypress-cucumber-preprocessor";
+import { createEsbuildPlugin } from "@badeball/cypress-cucumber-preprocessor/esbuild";
 
-
-module.exports = defineConfig({
+export default defineConfig({
   e2e: {
-    baseUrl: "https://santa-secret.ru/",
+    baseUrl: "https://santa-secret.ru",
+    specPattern: "cypress/e2e/tests/*.feature",
     testIsolation: false,
-    setupNodeEvents(on, config) {
+    async setupNodeEvents(on, config) {
       const bundler = createBundler({
         plugins: [createEsbuildPlugin(config)],
-      })
-      on('file:preprocessor', bundler);
-      addCucumberPreprocessorPlugin(on, config);
+      });
+
+      on("file:preprocessor", bundler);
+      await addCucumberPreprocessorPlugin(on, config);
 
       return config;
     },
