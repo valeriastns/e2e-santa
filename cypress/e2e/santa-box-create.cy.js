@@ -82,7 +82,6 @@ describe("user can create a box and run it", () => {
     it(`approve as participant ${index + 1}`, () => {
       cy.visit(inviteLink);
       cy.get(generalElements.submitButton).click();
-      cy.contains("войдите").click();
       cy.login(user.email, user.password);
       fillParticipantCard(wishes);
       cy.clearCookies();
